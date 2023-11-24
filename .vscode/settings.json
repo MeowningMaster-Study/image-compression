@@ -13,5 +13,6 @@
     "explorer.fileNesting.enabled": true,
     "explorer.fileNesting.patterns": {
         "package.json": "package-lock.json, pnpm-lock.yaml, .editorconfig, .gitignore, biome.json, tsconfig.json"
-    }
+    },
+    "typescript.tsdk": "node_modules\\typescript\\lib"
 }

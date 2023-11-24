@@ -5,11 +5,13 @@
         "start": "tsx src/main.ts"
     },
     "dependencies": {
+        "mathjs": "^12.1.0",
         "sharp": "^0.32.6"
     },
     "devDependencies": {
         "@types/node": "^20.9.5",
         "biome": "^0.3.3",
-        "tsx": "^4.4.0"
+        "tsx": "^4.4.0",
+        "typescript": "^5.3.2"
     }
 }
