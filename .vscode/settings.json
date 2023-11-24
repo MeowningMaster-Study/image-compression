@@ -1,0 +1,17 @@
+{
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "quickfix.biome": true,
+        "source.organizeImports.biome": true
+    },
+    "[javascript][typescript][javascriptreact][typescriptreact][json][jsonc]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[yaml]": {
+        "editor.defaultFormatter": "redhat.vscode-yaml"
+    },
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.patterns": {
+        "package.json": "package-lock.json, pnpm-lock.yaml, .editorconfig, .gitignore, biome.json, tsconfig.json"
+    }
+}
