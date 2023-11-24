@@ -1,6 +1,7 @@
+import * as math from 'mathjs'
 import sharp from 'sharp'
 
-type Matrix = number[][]
+export type Matrix = number[][]
 
 function bufferToMatrix(buffer: Buffer, width: number, height: number) {
     const matrix: Matrix = []
@@ -12,7 +13,7 @@ function bufferToMatrix(buffer: Buffer, width: number, height: number) {
         }
         matrix.push(row)
     }
-    return matrix
+    return math.matrix(matrix)
 }
 
 export async function readImage(path: string) {
@@ -40,11 +41,15 @@ function matrixToBuffer(matrix: Matrix) {
     return buffer
 }
 
-export async function saveImage(matrix: Matrix, path: string) {
-    const buffer = matrixToBuffer(matrix)
+import { mkdir } from 'node:fs/promises'
+import { dirname } from 'node:path'
 
-    const height = matrix.length
-    const width = matrix[0].length
+export async function saveImage(matrix: math.Matrix, path: string) {
+    await mkdir(dirname(path), { recursive: true })
+
+    const buffer = matrixToBuffer(matrix.toArray() as Matrix)
+
+    const [height, width] = matrix.size()
     const image = sharp(buffer, { raw: { width, height, channels: 1 } })
     await image.toFile(path)
 }

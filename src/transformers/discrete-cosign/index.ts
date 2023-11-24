@@ -8,12 +8,9 @@ import { fromZigzag, toZigzag } from './zigzag.js'
 type EncodedImage = [number, ...LengthEncoded[][]]
 
 export function compress(image: math.Matrix, quality = 50) {
+    assertCompressParameters(image, quality)
+
     const [height, width] = image.size()
-    if (height % N !== 0 || width % N !== 0) {
-        throw new Error(
-            `Image size must be divisible by ${N} (got ${height}x${width})`,
-        )
-    }
 
     const q = qualityMatrix(quality)
 
@@ -40,6 +37,18 @@ export function compress(image: math.Matrix, quality = 50) {
     }
 
     return encodedImage
+}
+function assertCompressParameters(image: math.Matrix, quality: number) {
+    const [height, width] = image.size()
+    if (height % N !== 0 || width % N !== 0) {
+        throw new Error(
+            `Image size must be divisible by ${N} (got ${height}x${width})`,
+        )
+    }
+
+    if (quality < 1 || quality > 100) {
+        throw new Error(`Quality must be between 1 and 100 (got ${quality})`)
+    }
 }
 
 export function decompress(encodedImage: EncodedImage): math.Matrix {

@@ -1,21 +1,38 @@
-import { mkdir } from 'fs/promises'
+import { join } from 'node:path'
 import * as math from 'mathjs'
 import * as dct from 'transformers/discrete-cosign/index.js'
+import * as wavelet from 'transformers/wavelet/index.js'
 import { readImage, saveImage } from './image.js'
 
 const imageName = 'lena.png'
-const dirs = {
-    input: 'images/input',
-    output: 'images/output',
-}
-const paths = {
-    input: `${dirs.input}/${imageName}`,
-    output: `${dirs.output}/${imageName}`,
+
+const image = await readImage(join('images/input', imageName))
+
+for (const [name, transform, dir] of [
+    ['Discrete Cosign Transform', runDct, 'dct'],
+    ['Wavelet Transform', runWavelet, 'wavelet'],
+] as const) {
+    const [duration, result] = trackTime(() => transform(image))
+    console.log(`${name} (${duration}ms)`)
+    await saveImage(result, join('images/output', dir, imageName))
 }
 
-await mkdir(dirs.output, { recursive: true })
+function runDct(image: math.Matrix) {
+    const compressed = dct.compress(image)
+    return dct.decompress(compressed)
+}
 
-const image = await readImage(paths.input)
-const dctCompressed = dct.compress(math.matrix(image))
-const dctDecompressed = dct.decompress(dctCompressed).toArray() as number[][]
-await saveImage(dctDecompressed, paths.output)
+function runWavelet(image: math.Matrix) {
+    const compressed = wavelet.compress(image)
+    return wavelet.decompress(compressed)
+}
+
+function trackTime<T>(func: () => T): [number, T] {
+    const start = process.hrtime.bigint()
+    const result = func()
+    const end = process.hrtime.bigint()
+
+    // Convert the duration to milliseconds
+    const duration = Number((end - start) / BigInt(1e6))
+    return [duration, result]
+}
